@@ -20,6 +20,7 @@ stream = feed.live_get_streamer(listener, track)
 while run_for_seconds > 0:
     run_for_seconds -= 1
     time.sleep(1)
+    print(f"time left before program saves and terminates: {run_for_seconds}")
 
 pickle_out = open(out_filename, "wb")
 pickle.dump(queue_stream, pickle_out)

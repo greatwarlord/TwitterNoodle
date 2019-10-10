@@ -19,7 +19,7 @@ queue_cleaned = []
 
 
 
-def stream_setup():
+def live_stream_setup():
     auth = credentials.auth
     api = tweepy.API(auth)
     api.wait_on_rate_limit = True
@@ -47,12 +47,6 @@ def cleaner_loop():
         if len(queue_stream) > 0:
             try:
                 tweet = queue_stream.pop(0)
-                    # new_obj = data_object.Data_obj()
-
-                    # new_obj.handle = 
-                    # new_obj.text = tweet.text
-                    # new_obj.location = tweet.location
-
                 print(tweet.text)
 
             except:
@@ -65,7 +59,7 @@ def cleaner_loop():
 
 
 
-stream_setup()
+live_stream_setup()
 
 first_thread = CustomThread()
 first_thread.custom_setup(cleaner_loop, False)

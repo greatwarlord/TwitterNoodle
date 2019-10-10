@@ -1,7 +1,9 @@
 import tweepy
 import credentials
 
-class Test_streamer(tweepy.StreamListener):
+
+
+class TestStreamer(tweepy.StreamListener):
     def on_status(self, status):
         print(status.text)
 
@@ -18,6 +20,9 @@ class Test_streamer(tweepy.StreamListener):
 auth = credentials.auth
 api = tweepy.API(auth)
 
-SL = Test_streamer()
+SL = TestStreamer()
 stream = tweepy.Stream(auth = auth, listener=SL)
+
+
 stream.sample()
+#stream.filter(track=["to", "and", "from"], languages=["en"], is_async= True)

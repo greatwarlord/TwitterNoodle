@@ -1,8 +1,11 @@
-class Data_obj_state_enum():
+
+
+
+class DataObjStateEnum():
     def __init__(self):
         pass # // AA: not implemented
 
-class Data_obj():
+class DataObj():
     def __init__(self):
         self.handle = None
         self.text = None

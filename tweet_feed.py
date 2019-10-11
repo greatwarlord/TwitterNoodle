@@ -1,5 +1,4 @@
 import tweepy
-import time
 import pickle
 from custom_stream_listener import CustomStreamListener as CSL
 import credentials

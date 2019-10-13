@@ -35,6 +35,8 @@ class BasicCleaner():
     def autocleaner(self):
         #self.text_processed = self.text_raw
         no_link = self.clean_links(self.text_raw)
+        # remove hashtags here
+        # remove @ ref here
         no_punct = self.clean_punctuation(no_link)
         tokens = self.tokenise(no_punct)
         wo_stop = self.clean_stopwords(tokens)

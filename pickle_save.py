@@ -21,6 +21,7 @@ track = ["from", "cat", "to", "and", "dog" ]
 
 def save_data(_content, _filename):
     pickle_out = open(_filename, "wb")
+    print(f"len:{len(_content)}")
     pickle.dump(_content, pickle_out)
     pickle_out.close()
 
@@ -38,17 +39,18 @@ def run(sec_total, sec_before_break):
     while loop_count > 0:
         print(f"--- {loop_count} loops remaining")
         countdown_to_slice = sec_before_break
-        timpestamp_start = datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S")
+        timpestamp_start = datetime.datetime.now().strftime("%Y%m%d-%H_%M_%S")
         while countdown_to_slice > 0:
             countdown_to_slice -= 1
             total_runtime += 1
             print(f"Runtime:{total_runtime} sec, out of {sec_total}")
             time.sleep(1)
 
-        timpestamp_cut = datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S")
+        timpestamp_cut = datetime.datetime.now().strftime("%Y%m%d-%H_%M_%S")
         filename = f"{out_directory}{timpestamp_start[2:]}--{timpestamp_cut[2:]}" 
-        save_data(save_data, filename)
-        queue_stream = []
+        save_data(queue_stream, filename)
+        queue_stream.clear()
+        
         loop_count -= 1
     stream.disconnect()
 

@@ -16,7 +16,7 @@ class BasicCleaner():
     def __init__(self, _text, _auto):
         self.text_raw = _text
         self.text_processed = ""
-        self.filtered_hashtag
+        self.filtered_hashtag = None
         if _auto:
             self.autocleaner()
 
@@ -36,9 +36,9 @@ class BasicCleaner():
     def autocleaner(self):
         #self.text_processed = self.text_raw
         no_link = self.clean_links(self.text_raw)
-        # remove hashtags here
+        no_hashtag = clean_hashtags(no_link)
         # remove @ ref here
-        no_punct = self.clean_punctuation(no_link)
+        no_punct = self.clean_punctuation(no_hashtag)
         tokens = self.tokenise(no_punct)
         wo_stop = self.clean_stopwords(tokens)
         de_tokens = self.detokenise(wo_stop)
@@ -53,6 +53,7 @@ class BasicCleaner():
 
     def clean_dates(self):
         pass
+    
     def clean_stopwords(self, text_in):
         stop_words = set(stopwords.words('english')) 
         return [item for item in text_in if not item in stop_words] 

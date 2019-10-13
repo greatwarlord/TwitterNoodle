@@ -55,8 +55,9 @@ class BasicCleaner():
         pass
     def clean_punctuation(self):
         pass
-    def clean_links(self):
-        pass
+    def clean_links(self, text_in):
+        return re.sub(r"[a-z]*[:.]+\S+", "",text_in)
+
     def clean_hashtags(self):
         pass
     def clean_nonsense(self):

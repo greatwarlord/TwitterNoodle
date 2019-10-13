@@ -4,11 +4,9 @@ import threading
 
 class CustomThread (threading.Thread):
 
-        def __init__(self):
+        def __init__(self, _task, _is_looped):
             super(CustomThread, self).__init__()
             self._stop_event = threading.Event()
-
-        def custom_setup(self, _task, _is_looped):
             self.task = _task
             self.is_looped = _is_looped
             #self.daemon = True

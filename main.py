@@ -48,11 +48,11 @@ def clean_process():
     cleaner.print_comparison()
 
 
-
+switch_cleaner_loop = True
 def cleaner_loop():
     #clean_process()
 
-    while True:
+    while switch_cleaner_loop:
         if len(queue_stream) > 0:
             try:
                 clean_process()
@@ -63,8 +63,7 @@ def cleaner_loop():
 
 setup_tweet_stream(queue_stream)
 
-first_thread = CustomThread()
-first_thread.custom_setup(cleaner_loop, False)
+first_thread = CustomThread(cleaner_loop, False)
 first_thread.start()
 
     
@@ -74,7 +73,7 @@ while run_for_seconds > 0:
     run_for_seconds -= 1
     time.sleep(1)
 
-
+switch_cleaner_loop = False
 stream.disconnect() if stream is not None else ...
 first_thread.stop()
 print("terminating program")

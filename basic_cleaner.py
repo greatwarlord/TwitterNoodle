@@ -33,7 +33,8 @@ class BasicCleaner():
 
     def autocleaner(self):
         #self.text_processed = self.text_raw
-        tokens = self.tokenise(self.text_raw)
+        no_link = self.clean_links(self.text_raw)
+        tokens = self.tokenise(no_link)
         wo_stop = self.clean_stopwords(tokens)
         de_tokens = self.detokenise(wo_stop)
 

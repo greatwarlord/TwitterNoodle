@@ -4,8 +4,8 @@ from tweepy import StreamListener
 
 class CustomStreamListener(StreamListener):
 
-    # // AA: overriding init might come with some issues, use this instead
-    def custom_setup(self, _destination, _stream_toggle, _warn_verbosity):
+    def __init__(self, _destination, _stream_toggle, _warn_verbosity):
+        super(CustomStreamListener,self).__init__()
         self.destination = _destination
         self.stream_toggle = _stream_toggle
         self.warn_verbosity = _warn_verbosity
@@ -23,8 +23,7 @@ class CustomStreamListener(StreamListener):
             self.out_warn(f"misc error: {status_code}")
 
     def out_warn(self, msg):
-        if not self.warn_verbosity:
-            print(msg)
+        print(msg) if not self.warn_verbosity else ...
 
 
 

@@ -12,11 +12,9 @@ class Feed():
             self.api.wait_on_rate_limit_notify = True
 
     def live_get_listener(self, queue_stream):
-        listener = CSL()
-        listener.custom_setup(_destination = queue_stream,      \
+        listener = CSL(_destination = queue_stream,             \
                                     _stream_toggle = True,      \
                                         _warn_verbosity = True)
-
         return listener
 
     def live_get_streamer(self, listener, track):

@@ -4,34 +4,56 @@ import pickle
 from tweet_feed import Feed
 import datetime
 
+# // AA: Note; 
+# //
+# // 1 : This is just a quick and inaccurate tool to capture data, acting as a quick hack
+# // 2 : run_for_seconds_total % run_for_seconds_break should = 0
+# // 3 : There are obvious improvements to be made, for example using datatime or similar to
+# //     get accuracy.
 
-# // AA: User options
-run_for_seconds_total = 30
-run_for_seconds_break = 10
-out_filename = "../test_set"
+
+# // AA: User options. Note: for accuracy
+run_for_seconds_total = 10 
+run_for_seconds_break = 5
+out_directory = "../DataCollection/"
 track = ["from", "cat", "to", "and", "dog" ]
 
-# // AA: Capture stream
-queue_stream = []
-feed = Feed()
-listener = feed.live_get_listener(queue_stream)
-stream = feed.live_get_streamer(listener, track)
 
-# // AA: ToDo: create use timestamp for file naming.
-# // AA: ToDo: partition each seconds into smaller files for memory friendliness.
-# // AA: ToDo: Use datetime to datermine runtime instead of decrementation of run_for_seconds
-#timpestamp_start = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+def save_data(_content, _filename):
+    pickle_out = open(_filename, "wb")
+    pickle.dump(_content, pickle_out)
+    pickle_out.close()
 
 
-# // AA: After time range; save and terminate
-while run_for_seconds_total > 0:
-    run_for_seconds_total -= 1
-    time.sleep(1)
-    print(f"time left before program saves and terminates: {run_for_seconds_total}")
+def run(sec_total, sec_before_break):
+    # // AA: Capture stream
+    queue_stream = []
+    feed = Feed()
+    listener = feed.live_get_listener(queue_stream)
+    stream = feed.live_get_streamer(listener, track)
 
-pickle_out = open(out_filename, "wb")
-pickle.dump(queue_stream, pickle_out)
-pickle_out.close()
+    # // AA: save periodically
+    loop_count = sec_total / sec_before_break
+    total_runtime = 0
+    while loop_count > 0:
+        print(f"--- {loop_count} loops remaining")
+        countdown_to_slice = sec_before_break
+        timpestamp_start = datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S")
+        while countdown_to_slice > 0:
+            countdown_to_slice -= 1
+            total_runtime += 1
+            print(f"Runtime:{total_runtime} sec, out of {sec_total}")
+            time.sleep(1)
 
-stream.disconnect()
+        timpestamp_cut = datetime.datetime.now().strftime("%Y%m%d_%H:%M:%S")
+        filename = f"{out_directory}{timpestamp_start[2:]}--{timpestamp_cut[2:]}" 
+        save_data(save_data, filename)
+        queue_stream = []
+        loop_count -= 1
+    stream.disconnect()
+
+if run_for_seconds_total % run_for_seconds_break == 0:
+    run(run_for_seconds_total, run_for_seconds_break)
+else:
+    print("run_for_seconds_total % run_for_seconds_break should be 0!")
 print("terminating program")

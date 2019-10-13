@@ -10,8 +10,8 @@ from basic_cleaner import BasicCleaner
 
 
 
-run_for_seconds = 1
-toggle_live = False
+run_for_seconds = 10
+toggle_live = True
 dataset_file_path = "../test_set"
 track = ["how", "does", "one", "even", "go", "so", "far", "as", "to" ]
 
@@ -45,13 +45,13 @@ def clean_process():
             
     queue_cleaned.append(new_data_obj)
     
+    # if cleaner.clean_hashtags is not None:
+    #     cleaner.print_comparison()
     cleaner.print_comparison()
 
 
 switch_cleaner_loop = True
 def cleaner_loop():
-    #clean_process()
-
     while switch_cleaner_loop:
         if len(queue_stream) > 0:
             try:

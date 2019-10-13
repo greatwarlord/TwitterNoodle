@@ -9,17 +9,18 @@ import data_object
 from basic_cleaner import BasicCleaner
 
 
+
 run_for_seconds = 1
 toggle_live = False
 dataset_file_path = "../test_set"
 track = ["how", "does", "one", "even", "go", "so", "far", "as", "to" ]
-
 
 queue_stream = []
 queue_cleaned = []
 
 stream = None
 listener = None
+
 
 
 def setup_tweet_stream(out_stream):
@@ -32,9 +33,6 @@ def setup_tweet_stream(out_stream):
     else:
         global queue_stream
         queue_stream = feed.disk_get_tweet_queue(dataset_file_path)
-
-        
-
 
 
 
@@ -49,15 +47,17 @@ def clean_process():
     
     cleaner.print_comparison()
 
-def cleaner_loop():
-    clean_process()
 
-    # while True:
-    #     if len(queue_stream) > 0:
-    #         try:
-    #             pass
-    #         except:
-    #             pass
+
+def cleaner_loop():
+    #clean_process()
+
+    while True:
+        if len(queue_stream) > 0:
+            try:
+                clean_process()
+            except:
+                print("cleaner_loop issue in main.py")
 
 
 

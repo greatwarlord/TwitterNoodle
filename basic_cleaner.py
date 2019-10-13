@@ -16,6 +16,7 @@ class BasicCleaner():
     def __init__(self, _text, _auto):
         self.text_raw = _text
         self.text_processed = ""
+        self.filtered_hashtag
         if _auto:
             self.autocleaner()
 
@@ -63,10 +64,12 @@ class BasicCleaner():
         return text_in.translate(str.maketrans('', '', string.punctuation))
 
     def clean_links(self, text_in):
-        return re.sub(r"[a-z]*[:.]+\S+", "",text_in)
+        return re.sub(r"[a-z]*[:.]+\S+","",text_in)
 
-    def clean_hashtags(self):
-        pass
+    def clean_hashtags(self, text_in):
+        self.filtered_hashtag = (re.findall(r"[#]\S*", text_in))
+        return re.sub(r"[#]\S*", "", text_in)
+
     def clean_nonsense(self):
         pass
     def clean_named_entities(self):

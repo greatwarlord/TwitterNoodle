@@ -30,13 +30,14 @@ class BasicCleaner():
         print("--------end raw-----------")
         print("-------start new----------")
         print(self.text_processed)
+        #print(f"hashtags: {self.filtered_hashtag}")
         print("--------end new-----------")
         print("##########################")
 
     def autocleaner(self):
         #self.text_processed = self.text_raw
         no_link = self.clean_links(self.text_raw)
-        no_hashtag = clean_hashtags(no_link)
+        no_hashtag = self.clean_hashtags(no_link)
         # remove @ ref here
         no_punct = self.clean_punctuation(no_hashtag)
         tokens = self.tokenise(no_punct)

@@ -13,7 +13,7 @@ class CustomThread (threading.Thread):
 
         def run (self):
                 if self.is_looped:
-                    while True:
+                    while self.is_looped:
                         self.task()
                 else:
                     self.task()

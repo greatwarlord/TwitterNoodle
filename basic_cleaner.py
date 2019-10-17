@@ -4,7 +4,7 @@ from nltk.tokenize import word_tokenize
 from nltk.tokenize.treebank import TreebankWordDetokenizer 
 import re
 import string
-
+from textblob import TextBlob as TB
 
 
 # class CleanerEnum(self):
@@ -17,6 +17,7 @@ class BasicCleaner():
         self.text_raw = _text
         self.text_processed = ""
         self.filtered_hashtag = None
+        self.sentiment = False
         if _auto:
             self.autocleaner()
 
@@ -30,6 +31,7 @@ class BasicCleaner():
         print("--------end raw-----------")
         print("-------start new----------")
         print(self.text_processed)
+        print(f"sentiment:{self.sentiment}")
         #print(f"hashtags: {self.filtered_hashtag}")
         print("--------end new-----------")
         print("##########################")
@@ -45,6 +47,7 @@ class BasicCleaner():
         de_tokens = self.detokenise(wo_stop)
 
         self.text_processed = de_tokens
+        self.set_sentiment(de_tokens, float(0))
  
     def tokenise(self, text_in):
         return word_tokenize(text_in) 
@@ -72,10 +75,20 @@ class BasicCleaner():
         self.filtered_hashtag = (re.findall(r"[#]\S*", text_in))
         return re.sub(r"[#]\S*", "", text_in)
 
+    def clean_alphatag(self, text_in):
+        pass
+
     def clean_nonsense(self):
         pass
     def clean_named_entities(self):
         pass
     
-    def autoclean(self):
+    def clean_convert_to_lowercase(self):
         pass
+
+    def set_sentiment(self, text_in, threshold):
+        if TB(text_in).sentiment[0] > threshold:
+            self.sentiment = True
+        else:
+            self.sentiment = False
+        

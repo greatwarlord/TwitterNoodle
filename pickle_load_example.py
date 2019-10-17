@@ -18,3 +18,4 @@ print("end of program, terminating..")
 
 
 
+l = [x.text for x in queue_stream]

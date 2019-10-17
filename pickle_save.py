@@ -12,8 +12,8 @@ import datetime
 # //     get accuracy.
 
 # // AA: User options. Note: for accuracy
-run_for_seconds_total = 1800 
-run_for_seconds_break = 60
+run_for_seconds_total = 20 
+run_for_seconds_break = 20
 out_directory = "../DataCollection/"
 track = ["from", "cat", "to", "and", "dog" ]
 

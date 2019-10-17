@@ -16,7 +16,8 @@ class BasicCleaner():
     def __init__(self, _text, _auto):
         self.text_raw = _text
         self.text_processed = ""
-        self.filtered_hashtag = None
+        self.filtered_hashtag = []
+        self.filtered_alphatag = []
         self.sentiment = False
         if _auto:
             self.autocleaner()
@@ -76,7 +77,8 @@ class BasicCleaner():
         return re.sub(r"[#]\S*", "", text_in)
 
     def clean_alphatag(self, text_in):
-        pass
+        self.filtered_alphatag = (re.findall(r"[@]\S*", text_in))
+        return re.sub(r"[@]\S*", "", text_in)
 
     def clean_nonsense(self):
         pass

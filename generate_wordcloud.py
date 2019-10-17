@@ -7,18 +7,8 @@ from basic_cleaner import BasicCleaner
 
 file_path = "../DataCollection/191013-20_25_33--191013-20_26_34" 
 
-def get_text():
-    # // AA: Load and clean pickled tweets
-    feed = Feed()
-    queue_stream = feed.disk_get_tweet_queue(file_path)
-    combined_string = ""
-    for tweet in queue_stream:
-        cleaner = BasicCleaner(tweet.text, True)
-        text = cleaner.get_text_processed()
-        combined_string += f" {text}"
-    return combined_string
 
-def get_text_2():
+def get_long_tweet_string():
     # // AA: Load and clean pickled tweets
     feed = Feed()
     queue_stream = feed.disk_get_tweet_queue(file_path)
@@ -31,7 +21,7 @@ def get_text_2():
   
 WC = WordCloud(width = 800, height = 800, 
                 background_color ='white',  
-                min_font_size = 10).generate(get_text_2()) 
+                min_font_size = 10).generate(get_long_tweet_string()) 
   
 # plot WC                       
 plt.figure(figsize = (8, 8), facecolor = None) 

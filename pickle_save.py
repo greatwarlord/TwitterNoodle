@@ -13,8 +13,8 @@ import datetime
 
 
 # // AA: User options. Note: for accuracy
-run_for_seconds_total = 10 
-run_for_seconds_break = 5
+run_for_seconds_total = 1800 
+run_for_seconds_break = 60
 out_directory = "../DataCollection/"
 track = ["from", "cat", "to", "and", "dog" ]
 

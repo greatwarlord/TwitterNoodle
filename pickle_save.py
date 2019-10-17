@@ -3,7 +3,6 @@ import time
 import pickle
 from tweet_feed import Feed
 import datetime
-import os
 
 # // AA: Note; 
 # //
@@ -12,13 +11,10 @@ import os
 # // 3 : There are obvious improvements to be made, for example using datatime or similar to
 # //     get accuracy.
 
-savedir = input('Save directory?')
-os.mkdir(savedir)
-
 # // AA: User options. Note: for accuracy
-run_for_seconds_total = 20 
-run_for_seconds_break = 20
-out_directory = savedir
+run_for_seconds_total = 1800 
+run_for_seconds_break = 60
+out_directory = "../DataCollection/"
 track = ["from", "cat", "to", "and", "dog" ]
 
 

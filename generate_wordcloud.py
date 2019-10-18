@@ -5,7 +5,7 @@ from tweet_feed import Feed
 from basic_cleaner import BasicCleaner
   
 
-file_path = "../DataCollection/191013-20_25_33--191013-20_26_34" 
+file_path = "../DataCollection/191017-17_35_31--191017-17_36_31" 
 
 
 def get_long_tweet_string():
@@ -13,8 +13,13 @@ def get_long_tweet_string():
     feed = Feed()
     queue_stream = feed.disk_get_tweet_queue(file_path)
     tweet_list = [tweet.text for tweet in queue_stream]
+    clean_list = []
+    for item in tweet_list:
+        cleaner = BasicCleaner(item, True)
+        clean_list.append(cleaner.get_text_processed())
+        cleaner.print_comparison()
     # // AA: return a long string of tweet texts
-    return " ".join(tweet_list)
+    return " ".join(clean_list)
 
 
 

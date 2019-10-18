@@ -41,8 +41,8 @@ class BasicCleaner():
         #self.text_processed = self.text_raw
         no_link = self.clean_links(self.text_raw)
         no_hashtag = self.clean_hashtags(no_link)
-        # remove @ ref here
-        no_punct = self.clean_punctuation(no_hashtag)
+        no_alphatags = self.clean_alphatag(no_hashtag)
+        no_punct = self.clean_punctuation(no_alphatags)
         tokens = self.tokenise(no_punct)
         wo_stop = self.clean_stopwords(tokens)
         de_tokens = self.detokenise(wo_stop)

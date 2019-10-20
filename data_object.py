@@ -6,6 +6,8 @@ class DataObjStateEnum():
         pass # // AA: not implemented
 
 class DataObj():
+
+    alphatags = []
     def __init__(self):
         self.name = None
         #self.handle = None
@@ -13,6 +15,9 @@ class DataObj():
         self.coordinates = None
         self.place = None
         #self.id = None
+        self.hashtags = []
+        self.alphatags = []
+        self.sentiment = False
 
         # // AA: Twitter obj entities might be worth looking into
 

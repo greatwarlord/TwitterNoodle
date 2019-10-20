@@ -17,7 +17,7 @@ class DataObj():
         #self.id = None
         self.hashtags = []
         self.alphatags = []
-        self.sentiment = False
+        self.valid_sentiment_range = False
 
         # // AA: Twitter obj entities might be worth looking into
 

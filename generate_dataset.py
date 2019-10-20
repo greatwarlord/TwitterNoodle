@@ -11,7 +11,7 @@ from custom_thread import CustomThread
 
 # // AA: Handles
 run_for_seconds_total = 600 
-run_for_seconds_break = 60
+run_for_seconds_break = 600
 out_directory = "../DataCollection/"
 zip_enabled = True
 track = ["from", "cat", "to", "and", "dog" ]
@@ -32,7 +32,7 @@ def save_data(_content, _filename):
             pickle.dump(content_copy, pickle_out)
             pickle_out.close()
 
-    first_thread = CustomThread(save, False)
+    first_thread = CustomThread(save, False) # // AA: DO NOT CHANGE TO TRUE!
     first_thread.start()
 
 
@@ -68,7 +68,7 @@ def run(sec_total, sec_before_break):
 
 
 if run_for_seconds_total % run_for_seconds_break == 0:
-    if run_for_seconds_total > run_for_seconds_break: # // AA: hack
+    if run_for_seconds_total >= run_for_seconds_break: # // AA: hack
         run(run_for_seconds_total, run_for_seconds_break)
     else: 
         print("total runtime is lower than slice interval. Aborting")

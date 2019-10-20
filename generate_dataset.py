@@ -1,31 +1,40 @@
+# // AA: IMPORTANT: This script is a hack for capturing some data. It is neither robust nor accurate.
 import tweepy
 import time
 import pickle
 from tweet_feed import Feed
 import datetime
+import bz2
+from custom_thread import CustomThread
 
-# // AA: Note; 
-# //
-# // 1 : This is just a quick and inaccurate tool to capture data, acting as a quick hack
-# // 2 : run_for_seconds_total % run_for_seconds_break should = 0
-# // 3 : There are obvious improvements to be made, for example using datatime or similar to
-# //     get accuracy.
 
-########################
-# // AA: IMPORTANT TODO: Autozip feature and async saving for timeing improvement 
-#######################
-# // AA: User options. Note: for accuracy
-run_for_seconds_total = 2 
-run_for_seconds_break = 2
+
+# // AA: Handles
+run_for_seconds_total = 600 
+run_for_seconds_break = 60
 out_directory = "../DataCollection/"
+zip_enabled = True
 track = ["from", "cat", "to", "and", "dog" ]
 
 
+
 def save_data(_content, _filename):
-    pickle_out = open(_filename, "wb")
-    print(f"len:{len(_content)}")
-    pickle.dump(_content, pickle_out)
-    pickle_out.close()
+    content_copy = _content.copy()
+    def save():
+        if zip_enabled:
+            sfile = bz2.BZ2File(f"{_filename}.zip", 'w')
+            pickle.dump(content_copy, sfile)
+            sfile.close()
+            print(f"len:{len(content_copy)}")
+        else:
+            pickle_out = open(_filename, "wb")
+            print(f"len:{len(content_copy)}")
+            pickle.dump(content_copy, pickle_out)
+            pickle_out.close()
+
+    first_thread = CustomThread(save, False)
+    first_thread.start()
+
 
 
 def run(sec_total, sec_before_break):
@@ -56,8 +65,13 @@ def run(sec_total, sec_before_break):
         loop_count -= 1
     stream.disconnect()
 
+
+
 if run_for_seconds_total % run_for_seconds_break == 0:
-    run(run_for_seconds_total, run_for_seconds_break)
+    if run_for_seconds_total > run_for_seconds_break: # // AA: hack
+        run(run_for_seconds_total, run_for_seconds_break)
+    else: 
+        print("total runtime is lower than slice interval. Aborting")
 else:
     print("run_for_seconds_total % run_for_seconds_break should be 0!")
 print("terminating program")

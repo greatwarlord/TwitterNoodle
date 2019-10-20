@@ -3,24 +3,24 @@ import matplotlib.pyplot as plt
 import pandas as pd 
 from tweet_feed import Feed
 from basic_cleaner import BasicCleaner
+import data_object
   
 
-file_path = "../DataCollection/191017-17_35_31--191017-17_36_31" 
+
+
+
+file_path = "../DataCollection/191020-18_19_45--191020-18_19_47" 
+
 
 
 def get_long_tweet_string():
-    # // AA: Load and clean pickled tweets
     feed = Feed()
     queue_stream = feed.disk_get_tweet_queue(file_path)
-    tweet_list = [tweet.text for tweet in queue_stream]
-    clean_list = []
-    for item in tweet_list:
-        cleaner = BasicCleaner(item, True)
-        clean_list.append(cleaner.get_text_processed())
-        cleaner.print_comparison()
-    # // AA: return a long string of tweet texts
-    return " ".join(clean_list)
-
+    data_objects = [data_object.get_dataobj_converted(tweet) for tweet in queue_stream]
+    #cleaned_data_objects = [BasicCleaner.autocleaner(obj, False) for obj in data_objects]
+    for obj in data_objects: BasicCleaner.autocleaner(obj, False)
+    long_string = [obj.text for obj in data_objects]
+    return " ".join(long_string)
 
 
   

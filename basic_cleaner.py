@@ -22,14 +22,14 @@ class BasicCleaner():
         print("--------end raw-----------")
         print("-------start new----------")
         print(_data_obj.text)
-        print(f"sentiment:{_data_obj.sentiment}")
+        print(f"sentiment:{_data_obj.valid_sentiment_range}")
         print(f"hashtags: {_data_obj.hashtags}")
         print(f"alphatags: {_data_obj.alphatags}")
         print("--------end new-----------")
         print("##########################")
 
     @classmethod
-    def autocleaner(self, _data_obj, _verbosity):
+    def autocleaner(self, _data_obj, _sentiment_range, _verbosity):
 
         text_raw = _data_obj.text
         self.clean_links(_data_obj)
@@ -39,7 +39,7 @@ class BasicCleaner():
         self.tokenise(_data_obj)
         self.clean_stopwords(_data_obj)
         self.detokenise(_data_obj)
-        self.set_sentiment(_data_obj, float(0.9))
+        self.set_sentiment(_data_obj, _sentiment_range)
 
         if _verbosity:
             self.print_comparison(_data_obj, text_raw)
@@ -96,6 +96,7 @@ class BasicCleaner():
         pass
 
     @staticmethod
-    def set_sentiment(_data_obj, threshold):
-        _data_obj.sentiment = TB(_data_obj.text).sentiment[0] > threshold
+    def set_sentiment(_data_obj, range):
+        score = TB(_data_obj.text).sentiment[0]
+        _data_obj.valid_sentiment_range = (score >= range[0]) and (score <= range[1])
         

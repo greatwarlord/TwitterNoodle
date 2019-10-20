@@ -39,18 +39,12 @@ def setup_tweet_stream(out_stream):
 def clean_process():
     tweet = queue_stream.pop(0)
     new_data_obj = data_object.get_dataobj_converted(tweet)
-
-    cleaner = BasicCleaner(_text=new_data_obj.text, _auto =True)
-    new_data_obj.text = cleaner.get_text_processed()
-            
+    BasicCleaner.autocleaner(new_data_obj, True)
     queue_cleaned.append(new_data_obj)
-    
-    # if cleaner.clean_hashtags is not None:
-    #     cleaner.print_comparison()
-    cleaner.print_comparison()
 
 
-switch_cleaner_loop = True
+
+switch_cleaner_loop = True # // AA: hack
 def cleaner_loop():
     while switch_cleaner_loop:
         if len(queue_stream) > 0:

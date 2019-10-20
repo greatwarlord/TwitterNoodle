@@ -11,9 +11,12 @@ import datetime
 # // 3 : There are obvious improvements to be made, for example using datatime or similar to
 # //     get accuracy.
 
+########################
+# // AA: IMPORTANT TODO: Autozip feature and async saving for timeing improvement 
+#######################
 # // AA: User options. Note: for accuracy
-run_for_seconds_total = 20 
-run_for_seconds_break = 20
+run_for_seconds_total = 2 
+run_for_seconds_break = 2
 out_directory = "../DataCollection/"
 track = ["from", "cat", "to", "and", "dog" ]
 

@@ -10,10 +10,10 @@ from custom_thread import CustomThread
 
 
 # // AA: Handles
-run_for_seconds_total = 600 
-run_for_seconds_break = 600
+run_for_seconds_total = 10 
+run_for_seconds_break = 10
 out_directory = "../DataCollection/"
-zip_enabled = True
+zip_enabled = False
 track = ["from", "cat", "to", "and", "dog" ]
 
 

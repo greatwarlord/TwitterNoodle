@@ -14,6 +14,7 @@ run_for_seconds = 10
 toggle_live = True
 dataset_file_path = "../test_set"
 track = ["how", "does", "one", "even", "go", "so", "far", "as", "to" ]
+sentiment_range = [float(-1), float(-0.5)]
 
 queue_stream = []
 queue_cleaned = []
@@ -39,7 +40,7 @@ def setup_tweet_stream(out_stream):
 def clean_process():
     tweet = queue_stream.pop(0)
     new_data_obj = data_object.get_dataobj_converted(tweet)
-    BasicCleaner.autocleaner(new_data_obj, True)
+    BasicCleaner.autocleaner(new_data_obj, sentiment_range, True)
     queue_cleaned.append(new_data_obj)
 
 

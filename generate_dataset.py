@@ -74,4 +74,4 @@ if run_for_seconds_total % run_for_seconds_break == 0:
         print("total runtime is lower than slice interval. Aborting")
 else:
     print("run_for_seconds_total % run_for_seconds_break should be 0!")
-print("terminating program")
+print("terminating program.")

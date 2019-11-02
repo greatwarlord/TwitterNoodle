@@ -2,14 +2,18 @@ import os
 import bz2
 import pickle 
 
+from random import shuffle # // AA: Testing chronological sorting
+
 # // add support for uncompressed vs compressed
 
 class DatasetScalingHelper():
 
     out_directory = None
     verbosity = False
-    fn_format = "YYMMDD-HH_MM_SS--YYMMDD-HH_MM_SS.zip"
+    fn_format = "YYMMDD-HH_MM_SS--YYMMDD-HH_MM_SS.zip" # // AA: Deprecated
+    format_fn_sep = "--"
     format_suffix_zip = ".zip"
+
 
     def __init__(self, _verbosity = True):
         self.verbosity = _verbosity
@@ -46,7 +50,19 @@ class DatasetScalingHelper():
 
         self.print_progress(f"saved content to: {_path}{self.format_suffix_zip}")
 
-    def merge_datasets_by_directory(self, _in_dir, _start_end_seperator):
+    def sort_tweetset_chronologically(self, _tweet_list):
+        _tweet_list.sort(key=lambda tweet: tweet.created_at, reverse=False)
+        self.print_progress("sorted tweet list")
+        
+    def reformat_tweet_datetime(self, _tweet):      
+        dt_string = str(_tweet.created_at)
+        dt_string = dt_string = dt_string[2:]
+        dt_string = dt_string.replace("-", "")
+        dt_string = dt_string.replace(" ", "-")
+        dt_string = dt_string.replace(":", "_")
+        return dt_string
+
+    def merge_datasets_by_directory(self, _in_dir, _sortby_tweet_time=True):
         if not os.path.isdir(_in_dir): self.print_warn("input dir: None. aborting"); return
         if _in_dir[-1] is not "/": _in_dir += "/"
 
@@ -54,34 +70,36 @@ class DatasetScalingHelper():
         #if len(file_names) is 0: self.print_warn("no files detected, aborting") ; return # // hack
         
         undesirables = [".DS_Store"] # // might show up in certain OS. OSX is currently supported
-        #if ".DS_Store" in file_names[0]: file_names[0].remove(".DS_Store")
         for x in undesirables:
             try:
                 file_names[0].remove(x)
             except:
                 pass    
 
-        #cache = [self.get_file_content(f"{_in_dir}{name}") for name in file_names[0]]
         cache = []
-        for name in file_names[0]:
-            #cache.append(self.get_file_content(f"{_in_dir}{name}"))
-            cache.extend(self.get_file_content(f"{_in_dir}{name}"))
-        
-            
-        print(cache[0].created_at)
-
-        # for item in cache:
-        #     print(item.created_at)    
+        for name in file_names[0]: cache.extend(self.get_file_content(f"{_in_dir}{name}"))
+        self.sort_tweetset_chronologically(cache)
 
 
-        # // AA: Get new filename and save
-        first_file_start = file_names[0][0].split(_start_end_seperator)[0]
-        last_file_end = file_names[0][-1].split(_start_end_seperator)[1]
-        new_name = f"{first_file_start}{_start_end_seperator}{last_file_end}"
-        if self.format_suffix_zip in new_name:  new_name = new_name.split(self.format_suffix_zip)[0]
-        #print(f"new path: {self.out_directory}{new_name}")
-    
-        #self.save_data(cache, f"{self.out_directory}{new_name}", True)
+        new_file_path = ""
+        if _sortby_tweet_time:
+            filename_start = self.reformat_tweet_datetime(cache[0])
+            filename_end = self.reformat_tweet_datetime(cache[-1])
+            new_file_path = f"{self.out_directory}{filename_start}{self.format_fn_sep}{filename_end}"
+        else:
+            # // AA: creates new filename by old filenames, not the same as time attached to tweets.
+            filename_start = file_names[0][0].split(self.format_fn_sep)[0]
+            filename_end = file_names[0][-1].split(self.format_fn_sep)[1]
+            new_file_path = f"{self.out_directory}{filename_start}{self.format_fn_sep}{filename_end}"
+            if self.format_suffix_zip in new_file_path:
+                new_file_path = new_file_path.split(self.format_suffix_zip)[0]
+
+
+        #print(new_file_path)
+        self.save_data(cache, new_file_path, True)
+
+
+
 
 
 
@@ -102,7 +120,7 @@ out_dir = "../TestFolder"
 in_dir = "../DataCollection"
 s = DatasetScalingHelper()
 s.set_out_dir(out_dir)
-s.merge_datasets_by_directory(in_dir, "--")
+s.merge_datasets_by_directory(in_dir, False)
 
 
 

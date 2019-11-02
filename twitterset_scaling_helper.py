@@ -2,7 +2,6 @@ import os
 import bz2
 import pickle 
 
-from random import shuffle # // AA: Testing chronological sorting
 
 # // add support for uncompressed vs compressed
 
@@ -42,6 +41,17 @@ class DatasetScalingHelper():
         if _path[-1] is not "/": _path += "/"
         self.directory_in = _path
 
+    #######
+    def get_filenames_inin_dir(self):
+        file_names = [item[2] for item in os.walk(self.directory_in)]
+        undesirables = [".DS_Store"] # // might show up in certain OS. OSX is currently supported
+        for x in undesirables:
+            try:
+                file_names[0].remove(x)
+            except:
+                pass  
+        return file_names[0]
+
     def get_file_content(self, _file_name, _is_compressed=True):
         # // implement _is_compressed option (for non compressed alternatives)
         unzipped = bz2.BZ2File(_file_name).read()
@@ -74,21 +84,11 @@ class DatasetScalingHelper():
 
     def merge_datasets_by_directory(self, _sortby_tweet_time=True):
         if not self.check_failsafe(): return
-
-        file_names = [item[2] for item in os.walk(self.directory_in)]
-        #if len(file_names) is 0: self.print_warn("no files detected, aborting") ; return # // hack
-        
-        undesirables = [".DS_Store"] # // might show up in certain OS. OSX is currently supported
-        for x in undesirables:
-            try:
-                file_names[0].remove(x)
-            except:
-                pass    
-
+        # // AA: Might need another failsafe for invalid files?
+        file_names = self.get_filenames_inin_dir()
         cache = []
-        for name in file_names[0]: cache.extend(self.get_file_content(f"{self.directory_in}{name}"))
+        for name in file_names: cache.extend(self.get_file_content(f"{self.directory_in}{name}"))
         self.sort_tweetset_chronologically(cache)
-
 
         new_file_path = ""
         if _sortby_tweet_time:
@@ -97,15 +97,14 @@ class DatasetScalingHelper():
             new_file_path = f"{self.directory_out}{filename_start}{self.format_fn_sep}{filename_end}"
         else:
             # // AA: creates new filename by old filenames, not the same as time attached to tweets.
-            filename_start = file_names[0][0].split(self.format_fn_sep)[0]
-            filename_end = file_names[0][-1].split(self.format_fn_sep)[1]
+            filename_start = file_names[0].split(self.format_fn_sep)[0]
+            filename_end = file_names[-1].split(self.format_fn_sep)[1]
             new_file_path = f"{self.directory_out}{filename_start}{self.format_fn_sep}{filename_end}"
             if self.format_suffix_zip in new_file_path:
                 new_file_path = new_file_path.split(self.format_suffix_zip)[0]
 
-
-        print(new_file_path)
-        #self.save_data(cache, new_file_path, True)
+        #print(new_file_path)
+        self.save_data(cache, new_file_path, True)
 
 
 
@@ -115,8 +114,46 @@ class DatasetScalingHelper():
     def merge_datasets_by_time_range(self):
         pass
 
-    def split_datasets_by_obj_count(self):
+    # only filename support is by tweet time
+    def split_dataset_by_obj_count(self, _divider):
+        if not self.check_failsafe(): return
+
+        file_names = self.get_filenames_inin_dir()
+        # // AA: rethink, probably a hack
+        if len(file_names) > 1: self.print_warn("trying to split several files. not allowed"); return
+        if len(file_names) == 0: self.print_warn("trying to split zero files. not allowed"); return
+
+        cache_continious = []
+        for name in file_names: 
+            cache_continious.extend(self.get_file_content(f"{self.directory_in}{name}"))
+        self.sort_tweetset_chronologically(cache_continious)
+
+        cache_split = []
+        cache_split_current_portion = []
+        cache_split_portion_size = int(len(cache_continious) / _divider)
+        while len(cache_continious) > 0:
+            tweet = cache_continious.pop(0)
+            cache_split_current_portion.append(tweet)
+            #cache_split_current_portion.append(cache_continious.pop(0))
+            if len(cache_split_current_portion) >= cache_split_portion_size:
+                copy = cache_split_current_portion.copy()
+                cache_split.append(copy)
+                cache_split_current_portion.clear()
+            
+        # resolution for uneven division: weak hack. Not spreading out because that would shuffle time
+        if len(cache_split_current_portion) > 0:
+            cache_split[-1].extend(cache_split_current_portion)
+
+        for chunk in cache_split:
+            filename_start = self.reformat_tweet_datetime(chunk[0])
+            filename_end = self.reformat_tweet_datetime(chunk[-1])
+            new_file_path = f"{self.directory_out}{filename_start}{self.format_fn_sep}{filename_end}"
+            self.print_progress(f'new path: {new_file_path}  containes:{len(chunk)} tweets')
+            self.save_data(chunk, new_file_path, True)
+        
+    def split_dataset_by_file_count(self, _file_count):
         pass
+
 
     def split_datasets_by_time_range(self):
         pass
@@ -125,15 +162,22 @@ class DatasetScalingHelper():
     
 
 s = DatasetScalingHelper()
-s.set_dir_output("../TestFolder")
-s.set_dir_input("../DataCollection")
-s.merge_datasets_by_directory(False)
+# s.set_dir_input("../DataCollection")
+# s.set_dir_output("../TestFolder_mergedFromDataColl")
+# s.merge_datasets_by_directory(True)
+
+# s.set_dir_input("../TestFolder_mergedFromDataColl")
+# s.set_dir_output("../TestFolder2_splitFromTestFolder")
+# s.split_dataset_by_obj_count(6)
+
+# s.set_dir_input("../TestFolder2_splitFromTestFolder")
+# s.set_dir_output("../TestFolder3_mergedFromTestFolder2")
+# s.merge_datasets_by_directory(True)
+
+s.set_dir_input("../TestFolder3_mergedFromTestFolder2")
+s.set_dir_output("../TestFolder4_splitFromTestFolder3")
+s.split_dataset_by_obj_count(6)
 
 
-
-#p = s.get_file_content("../DataCollection/191101-16_03_06--191101-16_03_11.zip")
-#print(p)
-# for x in p:
-#     print(x.text)
 
 print('terminating')

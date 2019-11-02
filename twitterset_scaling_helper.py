@@ -12,7 +12,7 @@ class DatasetScalingHelper():
 
     verbosity = False
     fn_format = "YYMMDD-HH_MM_SS--YYMMDD-HH_MM_SS.zip" # // AA: Deprecated
-    format_fn_sep = "--"
+    format_fn_sep = "--" # // AA: Goes between time range (for file names)
     format_suffix_zip = ".zip"
 
 
@@ -84,17 +84,18 @@ class DatasetScalingHelper():
             sfile = bz2.BZ2File(f"{_path}{self.format_suffix_zip}", 'w')
             pickle.dump(_content, sfile)
             sfile.close()
+            self.print_progress(f"saved content to: {_path}{self.format_suffix_zip}")
         else:
             pickle_out = open(_path, "wb")
             pickle.dump(_content, pickle_out)
             pickle_out.close()
+            self.print_progress(f"saved content to: {_path}")
 
-        self.print_progress(f"saved content to: {_path}{self.format_suffix_zip}")
-        
 
     def merge_datasets_by_directory(self, _sortby_tweet_time=True):
         if not self.check_failsafe(): return
         # // AA: Might need another failsafe for invalid files?
+
         file_names = self.get_filenames_inin_dir()
         cache = []
         for name in file_names: cache.extend(self.get_file_content(f"{self.directory_in}{name}"))
@@ -113,7 +114,6 @@ class DatasetScalingHelper():
             if self.format_suffix_zip in new_file_path:
                 new_file_path = new_file_path.split(self.format_suffix_zip)[0]
 
-        #print(new_file_path)
         self.save_data(cache, new_file_path, True)
 
 
@@ -139,15 +139,14 @@ class DatasetScalingHelper():
         cache_split_current_portion = []
         cache_split_portion_size = int(len(cache_continious) / _divider)
         while len(cache_continious) > 0:
-            tweet = cache_continious.pop(0)
-            cache_split_current_portion.append(tweet)
-            #cache_split_current_portion.append(cache_continious.pop(0))
+            cache_split_current_portion.append(cache_continious.pop(0))
             if len(cache_split_current_portion) >= cache_split_portion_size:
                 copy = cache_split_current_portion.copy()
                 cache_split.append(copy)
                 cache_split_current_portion.clear()
             
-        # resolution for uneven division: weak hack. Not spreading out because that would shuffle time
+        # // AA: resolution for uneven division: weak hack. Not spreading out evenly 
+        # //        because that would shuffle timestamps
         if len(cache_split_current_portion) > 0:
             cache_split[-1].extend(cache_split_current_portion)
 
@@ -155,7 +154,6 @@ class DatasetScalingHelper():
             filename_start = self.reformat_tweet_datetime(chunk[0])
             filename_end = self.reformat_tweet_datetime(chunk[-1])
             new_file_path = f"{self.directory_out}{filename_start}{self.format_fn_sep}{filename_end}"
-            self.print_progress(f'new path: {new_file_path}  containes:{len(chunk)} tweets')
             self.save_data(chunk, new_file_path, True)
         
 
@@ -170,17 +168,10 @@ s = DatasetScalingHelper()
 # s.set_dir_output("../TestFolder_mergedFromDataColl")
 # s.merge_datasets_by_directory(True)
 
-# s.set_dir_input("../TestFolder_mergedFromDataColl")
-# s.set_dir_output("../TestFolder2_splitFromTestFolder")
-# s.split_dataset_by_obj_count(6)
-
-# s.set_dir_input("../TestFolder2_splitFromTestFolder")
-# s.set_dir_output("../TestFolder3_mergedFromTestFolder2")
-# s.merge_datasets_by_directory(True)
-
-s.set_dir_input("../TestFolder3_mergedFromTestFolder2")
-s.set_dir_output("../TestFolder4_splitFromTestFolder3")
+s.set_dir_input("../TestFolder_mergedFromDataColl")
+s.set_dir_output("../TestFolder2_splitFromTestFolder")
 s.split_dataset_by_obj_count(6)
+
 
 
 

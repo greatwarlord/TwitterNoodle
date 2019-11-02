@@ -19,29 +19,34 @@ class DatasetScalingHelper():
     def __init__(self, _verbosity = True):
         self.verbosity = _verbosity
 
+
     def check_failsafe(self):
         if self.directory_in is None: self.print_warn("no input dir, aborting"); return False
         if self.directory_out is None: self.print_warn("no output dir, aborting"); return False
 
         return True
 
+
     def print_progress(self, _msg):
         print(f"progress: {_msg}") if self.verbosity else ...
 
+
     def print_warn(self, _msg):
         print(f"warn: {_msg}") if self.verbosity else ...
+
 
     def set_dir_output(self, _path):
         if not os.path.isdir(_path): self.print_warn("output dir: None. aborting"); return
         if _path[-1] is not "/": _path += "/"
         self.directory_out = _path
 
+
     def set_dir_input(self, _path):
         if not os.path.isdir(_path): self.print_warn("input dir: None. aborting"); return
         if _path[-1] is not "/": _path += "/"
         self.directory_in = _path
 
-    #######
+
     def get_filenames_inin_dir(self):
         file_names = [item[2] for item in os.walk(self.directory_in)]
         undesirables = [".DS_Store"] # // might show up in certain OS. OSX is currently supported
@@ -52,11 +57,27 @@ class DatasetScalingHelper():
                 pass  
         return file_names[0]
 
+
     def get_file_content(self, _file_name, _is_compressed=True):
         # // implement _is_compressed option (for non compressed alternatives)
         unzipped = bz2.BZ2File(_file_name).read()
         non_binary = pickle.loads(unzipped)
         return non_binary 
+
+
+    def sort_tweetset_chronologically(self, _tweet_list):
+        _tweet_list.sort(key=lambda tweet: tweet.created_at, reverse=False)
+        self.print_progress("sorted tweet list")
+
+
+    def reformat_tweet_datetime(self, _tweet):      
+        dt_string = str(_tweet.created_at)
+        dt_string = dt_string = dt_string[2:]
+        dt_string = dt_string.replace("-", "")
+        dt_string = dt_string.replace(" ", "-")
+        dt_string = dt_string.replace(":", "_")
+        return dt_string
+
 
     def save_data(self, _content, _path, _compression_enabled):
         if _compression_enabled:
@@ -69,18 +90,7 @@ class DatasetScalingHelper():
             pickle_out.close()
 
         self.print_progress(f"saved content to: {_path}{self.format_suffix_zip}")
-
-    def sort_tweetset_chronologically(self, _tweet_list):
-        _tweet_list.sort(key=lambda tweet: tweet.created_at, reverse=False)
-        self.print_progress("sorted tweet list")
         
-    def reformat_tweet_datetime(self, _tweet):      
-        dt_string = str(_tweet.created_at)
-        dt_string = dt_string = dt_string[2:]
-        dt_string = dt_string.replace("-", "")
-        dt_string = dt_string.replace(" ", "-")
-        dt_string = dt_string.replace(":", "_")
-        return dt_string
 
     def merge_datasets_by_directory(self, _sortby_tweet_time=True):
         if not self.check_failsafe(): return
@@ -107,12 +117,9 @@ class DatasetScalingHelper():
         self.save_data(cache, new_file_path, True)
 
 
-
-
-
-
     def merge_datasets_by_time_range(self):
         pass
+
 
     # only filename support is by tweet time
     def split_dataset_by_obj_count(self, _divider):
@@ -151,9 +158,6 @@ class DatasetScalingHelper():
             self.print_progress(f'new path: {new_file_path}  containes:{len(chunk)} tweets')
             self.save_data(chunk, new_file_path, True)
         
-    def split_dataset_by_file_count(self, _file_count):
-        pass
-
 
     def split_datasets_by_time_range(self):
         pass

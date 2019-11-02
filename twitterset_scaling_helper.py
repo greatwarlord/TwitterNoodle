@@ -8,7 +8,9 @@ from random import shuffle # // AA: Testing chronological sorting
 
 class DatasetScalingHelper():
 
-    out_directory = None
+    directory_out = None
+    directory_in = None
+
     verbosity = False
     fn_format = "YYMMDD-HH_MM_SS--YYMMDD-HH_MM_SS.zip" # // AA: Deprecated
     format_fn_sep = "--"
@@ -19,7 +21,10 @@ class DatasetScalingHelper():
         self.verbosity = _verbosity
 
     def check_failsafe(self):
-        pass
+        if self.directory_in is None: self.print_warn("no input dir, aborting"); return False
+        if self.directory_out is None: self.print_warn("no output dir, aborting"); return False
+
+        return True
 
     def print_progress(self, _msg):
         print(f"progress: {_msg}") if self.verbosity else ...
@@ -27,10 +32,15 @@ class DatasetScalingHelper():
     def print_warn(self, _msg):
         print(f"warn: {_msg}") if self.verbosity else ...
 
-    def set_out_dir(self, _path):
-        if not os.path.isdir(_path): self.print_warn("input dir: None. aborting") ; return
+    def set_dir_output(self, _path):
+        if not os.path.isdir(_path): self.print_warn("output dir: None. aborting"); return
         if _path[-1] is not "/": _path += "/"
-        self.out_directory = _path
+        self.directory_out = _path
+
+    def set_dir_input(self, _path):
+        if not os.path.isdir(_path): self.print_warn("input dir: None. aborting"); return
+        if _path[-1] is not "/": _path += "/"
+        self.directory_in = _path
 
     def get_file_content(self, _file_name, _is_compressed=True):
         # // implement _is_compressed option (for non compressed alternatives)
@@ -62,11 +72,10 @@ class DatasetScalingHelper():
         dt_string = dt_string.replace(":", "_")
         return dt_string
 
-    def merge_datasets_by_directory(self, _in_dir, _sortby_tweet_time=True):
-        if not os.path.isdir(_in_dir): self.print_warn("input dir: None. aborting"); return
-        if _in_dir[-1] is not "/": _in_dir += "/"
+    def merge_datasets_by_directory(self, _sortby_tweet_time=True):
+        if not self.check_failsafe(): return
 
-        file_names = [item[2] for item in os.walk(_in_dir)]
+        file_names = [item[2] for item in os.walk(self.directory_in)]
         #if len(file_names) is 0: self.print_warn("no files detected, aborting") ; return # // hack
         
         undesirables = [".DS_Store"] # // might show up in certain OS. OSX is currently supported
@@ -77,7 +86,7 @@ class DatasetScalingHelper():
                 pass    
 
         cache = []
-        for name in file_names[0]: cache.extend(self.get_file_content(f"{_in_dir}{name}"))
+        for name in file_names[0]: cache.extend(self.get_file_content(f"{self.directory_in}{name}"))
         self.sort_tweetset_chronologically(cache)
 
 
@@ -85,26 +94,22 @@ class DatasetScalingHelper():
         if _sortby_tweet_time:
             filename_start = self.reformat_tweet_datetime(cache[0])
             filename_end = self.reformat_tweet_datetime(cache[-1])
-            new_file_path = f"{self.out_directory}{filename_start}{self.format_fn_sep}{filename_end}"
+            new_file_path = f"{self.directory_out}{filename_start}{self.format_fn_sep}{filename_end}"
         else:
             # // AA: creates new filename by old filenames, not the same as time attached to tweets.
             filename_start = file_names[0][0].split(self.format_fn_sep)[0]
             filename_end = file_names[0][-1].split(self.format_fn_sep)[1]
-            new_file_path = f"{self.out_directory}{filename_start}{self.format_fn_sep}{filename_end}"
+            new_file_path = f"{self.directory_out}{filename_start}{self.format_fn_sep}{filename_end}"
             if self.format_suffix_zip in new_file_path:
                 new_file_path = new_file_path.split(self.format_suffix_zip)[0]
 
 
-        #print(new_file_path)
-        self.save_data(cache, new_file_path, True)
+        print(new_file_path)
+        #self.save_data(cache, new_file_path, True)
 
 
 
 
-
-
-        
-        
 
 
     def merge_datasets_by_time_range(self):
@@ -116,11 +121,13 @@ class DatasetScalingHelper():
     def split_datasets_by_time_range(self):
         pass
 
-out_dir = "../TestFolder"
-in_dir = "../DataCollection"
+
+    
+
 s = DatasetScalingHelper()
-s.set_out_dir(out_dir)
-s.merge_datasets_by_directory(in_dir, False)
+s.set_dir_output("../TestFolder")
+s.set_dir_input("../DataCollection")
+s.merge_datasets_by_directory(False)
 
 
 

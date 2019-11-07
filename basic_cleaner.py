@@ -1,5 +1,6 @@
 
-from nltk.corpus import stopwords 
+#from nltk.corpus import stopwords  # // AA(071119): deprecated
+import custom_stopwords
 from nltk.tokenize import word_tokenize
 from nltk.tokenize.treebank import TreebankWordDetokenizer 
 import re
@@ -35,10 +36,14 @@ class BasicCleaner():
         self.clean_links(_data_obj)
         self.clean_hashtags(_data_obj)
         self.clean_alphatags(_data_obj)
-        self.clean_punctuation(_data_obj)
+
         self.tokenise(_data_obj)
         self.clean_stopwords(_data_obj)
         self.detokenise(_data_obj)
+
+        self.clean_punctuation(_data_obj)
+        self.clean_numbers(_data_obj)
+   
         self.set_sentiment(_data_obj, _sentiment_range)
 
         if _verbosity:
@@ -58,12 +63,13 @@ class BasicCleaner():
 
     @staticmethod
     def clean_stopwords(_data_obj):
-        stop_words = set(stopwords.words('english')) 
+        #stop_words = set(stopwords.words('english')) # // AA(071119): deprecated
+        stop_words = custom_stopwords.main()
         _data_obj.text = [item for item in _data_obj.text if not item in stop_words] 
 
     @staticmethod
     def clean_numbers(_data_obj):
-        pass
+        _data_obj.text = re.sub(r'\d+', '', _data_obj.text)
 
     @staticmethod
     def clean_punctuation(_data_obj):

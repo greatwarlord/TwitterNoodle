@@ -1,9 +1,9 @@
 
-from stop_words import get_stop_words
+from nltk.corpus import stopwords 
 
 
 
-import_file = "asdf.txt"
+import_file = "custom_stopwords_list.txt"
 l = []
 
 
@@ -18,7 +18,7 @@ def file_to_list(_in, _list):
 
 def main():
     file_to_list(import_file, l)
-    stop_words = get_stop_words('english')
+    stop_words = stopwords.words('english')
     l.extend(stop_words)
-    return l
+    return set(l)
 

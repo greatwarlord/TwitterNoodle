@@ -6,7 +6,6 @@ from nltk.corpus import stopwords
 import_file = "custom_stopwords_list.txt"
 l = []
 
-
 def file_to_list(_in, _list):
     with open(_in, "r") as f:
         content = f.readline()

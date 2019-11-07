@@ -93,7 +93,7 @@ class BasicCleaner():
 
     @staticmethod
     def clean_convert_to_lowercase(_data_obj):
-        pass
+        _data_obj.text = _data_obj.text.lower()
 
     @staticmethod
     def set_sentiment(_data_obj, range):

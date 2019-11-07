@@ -26,6 +26,8 @@ class Generate_Dataset():
 
     track_keywords = None
 
+
+
     def __init__(self, _runtime_total, 
                         _runtime_between_slices, 
                             _runtime_forever, 
@@ -36,10 +38,12 @@ class Generate_Dataset():
         self.out_directory = _out_directory
         self.track_keywords = _track_keywords
 
+
     def print_progress(self, _content):
         if not self.verbosity: return
         # // AA: Hook to interface?
         print(f"{_content}")
+
 
     def print_progress_bar(self, _current,_max, _bar_size = 20, _descriptor="", leave_last=True):
         # // AA: guard divide by zero
@@ -51,11 +55,12 @@ class Generate_Dataset():
         depict_empty = " "
         bar_progress = int((percent / 100 ) * _bar_size)
         empty_count = int(_bar_size - bar_progress)
-        #print( _descriptor ,end="\r")
         bar_str = f" |{depict_arr*bar_progress}>{depict_empty*empty_count}| {round(percent, 1)}%"
-        # // AA: Exec
+        print(f"{' '*100}", end="\r") # // AA: bad hack
+        # // AA: Execute
         if bar_progress is _bar_size and leave_last: print(f"{_descriptor} {bar_str}")
         else: print(f"{_descriptor} {bar_str}", end="\r")
+
 
     def validate_session(self):
         if self.runtime_total is None: return False
@@ -66,6 +71,7 @@ class Generate_Dataset():
         if self.track_keywords is None: return False 
         
         return True
+
 
     def get_time_left(self):
         if not self.is_running: return "Not running"
@@ -88,6 +94,7 @@ class Generate_Dataset():
 
         first_thread = CustomThread(save, False) # // AA: DO NOT CHANGE TO TRUE!
         first_thread.start()
+
 
     def run_collector(self):
         if not self.validate_session():
@@ -131,8 +138,8 @@ class Generate_Dataset():
 
 
 
-time_total = 10
-time_between_slices = 2
+time_total = 5
+time_between_slices = 5
 run_forever = False
 out_dir = "../DataCollection/"
 track = ["from", "cat", "to", "and", "dog" ]

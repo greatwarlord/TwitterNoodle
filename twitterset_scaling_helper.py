@@ -164,9 +164,6 @@ class DatasetScalingHelper():
     
 
 s = DatasetScalingHelper()
-# s.set_dir_input("../DataCollection")
-# s.set_dir_output("../TestFolder_mergedFromDataColl")
-# s.merge_datasets_by_directory(True)
 
 s.set_dir_input("../TestFolder_mergedFromDataColl")
 s.set_dir_output("../TestFolder2_splitFromTestFolder")

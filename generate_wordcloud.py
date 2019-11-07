@@ -8,11 +8,13 @@ import data_object
 
 
 
-file_path = "../DataCollection/191020-20_39_57--191020-20_40_07" 
-sentiment_range = [float(-1), float(-0.5)]
+#file_path = "../pickle_saved_data"
+file_path = "../DataCollection/191107-16_38_54--191107-16_38_59" 
+sentiment_range = [float(-1), float(1)]
 
 
-
+# // AA: Helper for creating continious string for wordclouds.
+# //        Might need a revision to remove printout to std
 def get_long_tweet_string():
     feed = Feed()
     queue_stream = feed.disk_get_tweet_queue(file_path)

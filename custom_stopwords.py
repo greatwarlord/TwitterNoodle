@@ -1,9 +1,7 @@
-
 from nltk.corpus import stopwords 
 
-
-
 import_file = "custom_stopwords_list.txt"
+
 l = []
 
 def file_to_list(_in, _list):
@@ -20,4 +18,5 @@ def main():
     stop_words = stopwords.words('english')
     l.extend(stop_words)
     return set(l)
+
 

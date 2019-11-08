@@ -4,6 +4,7 @@ import pandas as pd
 from tweet_feed import Feed
 from basic_cleaner import BasicCleaner
 import data_object
+import csv
 
 
 
@@ -43,9 +44,7 @@ def generate_wordcloud():
 
     plt.show() 
     
-        # self.alphatags = []
 
-import csv
 def write_csv(_filename):
     with open(_filename, 'w', newline='') as csvfile:
         obj_writer = csv.writer(csvfile, delimiter=' ',

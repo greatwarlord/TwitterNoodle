@@ -17,17 +17,22 @@ class BasicCleaner():
 
     @staticmethod
     def print_comparison(_data_obj, _text_raw):
-        print("##########################")
-        print("-------start raw----------")
-        print(_text_raw)
-        print("--------end raw-----------")
-        print("-------start new----------")
-        print(_data_obj.text)
-        print(f"sentiment:{_data_obj.valid_sentiment_range}")
-        print(f"hashtags: {_data_obj.hashtags}")
-        print(f"alphatags: {_data_obj.alphatags}")
-        print("--------end new-----------")
-        print("##########################")
+        try:
+            print("##########################")
+            print("-------start raw----------")
+            print(_text_raw)
+            print("--------end raw-----------")
+            print("-------start new----------")
+            print(_data_obj.text)
+            print(f"sentiment:{_data_obj.valid_sentiment_range}")
+            print(f"hashtags: {_data_obj.hashtags}")
+            print(f"alphatags: {_data_obj.alphatags}")
+            print("--------end new-----------")
+            print("##########################")
+        except OSError:
+            print("OSError: could not printout this tweet")
+        except IOError:
+            print("IOErro: could not printout this tweet")
 
     @classmethod
     def autocleaner(self, _data_obj, _sentiment_range, _verbosity):
@@ -37,6 +42,7 @@ class BasicCleaner():
         self.clean_hashtags(_data_obj)
         self.clean_alphatags(_data_obj)
 
+        self.clean_convert_to_lowercase(_data_obj)
         self.tokenise(_data_obj)
         self.clean_stopwords(_data_obj)
         self.detokenise(_data_obj)

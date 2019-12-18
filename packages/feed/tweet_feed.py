@@ -1,7 +1,7 @@
 import tweepy
 import pickle
-from custom_stream_listener import CustomStreamListener as CSL
-import credentials
+from packages.feed.custom_stream_listener import CustomStreamListener as CSL
+from packages.feed import credentials
 
 class Feed():
 
@@ -12,8 +12,8 @@ class Feed():
             self.api.wait_on_rate_limit_notify = True
 
     def live_get_listener(self, queue_stream):
-        listener = CSL(_destination = queue_stream,             \
-                                    _stream_toggle = True,      \
+        listener = CSL(_destination = queue_stream,
+                                    _stream_toggle = True,
                                         _warn_verbosity = True)
         return listener
 

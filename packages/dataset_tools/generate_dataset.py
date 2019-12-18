@@ -1,11 +1,12 @@
 import time
 from datetime import datetime
-
 import bz2
 import pickle
 
-from tweet_feed import Feed
-from custom_thread import CustomThread
+from packages.feed.tweet_feed import Feed
+from packages.misc.custom_thread import CustomThread as CustomThread
+
+from packages.cleaning import custom_stopwords
 
 
 
@@ -105,7 +106,7 @@ class Generate_Dataset():
         queue_stream = []
         feed = Feed()
         listener = feed.live_get_listener(queue_stream)
-        stream = feed.live_get_streamer(listener, track)
+        stream = feed.live_get_streamer(listener, self.track_keywords)
 
         # // AA: Setup time
         self.is_running = True
@@ -137,14 +138,12 @@ class Generate_Dataset():
         self.is_running = False
 
 
+def test(_path="../DataCollection/", _time_total=10, _time_between_slices=10, _track=None ):
+    run_forever = False
+    if _track is None:
+        _track = custom_stopwords.main()
 
-time_total = 5
-time_between_slices = 5
-run_forever = False
-out_dir = "../DataCollection/"
-track = ["from", "cat", "to", "and", "dog" ]
+    gen = Generate_Dataset(_time_total, _time_between_slices, run_forever, _path, _track)
+    gen.run_collector()
 
-c = Generate_Dataset(time_total, time_between_slices, run_forever, out_dir, track)
-c.run_collector()
-
-print("terminated")
+    print("terminated")

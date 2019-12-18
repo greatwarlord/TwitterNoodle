@@ -1,7 +1,4 @@
-RT
 rt
 pm
-PM
 am
-AM
-EST
+est

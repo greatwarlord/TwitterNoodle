@@ -1,11 +1,12 @@
 
 #from nltk.corpus import stopwords  # // AA(071119): deprecated
-import custom_stopwords
-from nltk.tokenize import word_tokenize
-from nltk.tokenize.treebank import TreebankWordDetokenizer 
 import re
 import string
 from textblob import TextBlob as TB
+
+import packages.cleaning.custom_stopwords as custom_stopwords
+from nltk.tokenize import word_tokenize
+from nltk.tokenize.treebank import TreebankWordDetokenizer 
 
 
 
@@ -29,10 +30,8 @@ class BasicCleaner():
             print(f"alphatags: {_data_obj.alphatags}")
             print("--------end new-----------")
             print("##########################")
-        except OSError:
-            print("OSError: could not printout this tweet")
-        except IOError:
-            print("IOErro: could not printout this tweet")
+        except:
+            pass
 
     @classmethod
     def autocleaner(self, _data_obj, _sentiment_range, _verbosity):

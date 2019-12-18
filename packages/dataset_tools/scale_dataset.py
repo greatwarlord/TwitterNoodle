@@ -162,14 +162,10 @@ class DatasetScalingHelper():
 
 
     
+def test(_path_in="../datasplit/in", _path_out ="../datasplit/out"):
+    s = DatasetScalingHelper()
+    s.set_dir_input(_path_in)
+    s.set_dir_output(_path_out)
+    s.split_dataset_by_obj_count(10)
 
-s = DatasetScalingHelper()
-
-s.set_dir_input("../TestFolder_mergedFromDataColl")
-s.set_dir_output("../TestFolder2_splitFromTestFolder")
-s.split_dataset_by_obj_count(6)
-
-
-
-
-print('terminating')
+    print('terminating')

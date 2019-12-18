@@ -1,6 +1,3 @@
-
-
-
 class DataObjStateEnum():
     def __init__(self):
         pass # // AA: not implemented

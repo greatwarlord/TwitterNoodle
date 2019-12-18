@@ -2,11 +2,12 @@ import tweepy
 #import asyncio
 import time
 import threading
-from custom_stream_listener import CustomStreamListener as CSL
-from custom_thread import CustomThread
-from tweet_feed import Feed
-import data_object
-from basic_cleaner import BasicCleaner
+
+from packages.feed.custom_stream_listener import CustomStreamListener as CSL
+from packages.misc.custom_thread import CustomThread
+from packages.feed.tweet_feed import Feed
+from packages.cleaning import data_object
+from packages.cleaning.basic_cleaner import BasicCleaner
 
 
 
@@ -42,6 +43,7 @@ def clean_process():
     new_data_obj = data_object.get_dataobj_converted(tweet)
     BasicCleaner.autocleaner(new_data_obj, sentiment_range, True)
     queue_cleaned.append(new_data_obj)
+    print(len(queue_stream))
 
 
 

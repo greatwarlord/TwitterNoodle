@@ -6,6 +6,7 @@ class DataObj():
 
     alphatags = []
     def __init__(self):
+        self.unique_id = None
         self.name = None
         #self.handle = None
         self.text = None
@@ -27,6 +28,7 @@ class DataObj():
 
 def get_dataobj_converted(tweet):
     new_obj = DataObj()
+    new_obj.unique_id = tweet.id_str
     new_obj.name = tweet.user.name
     new_obj.text = tweet.text
     new_obj.coordinates = tweet.coordinates

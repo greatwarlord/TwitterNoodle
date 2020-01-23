@@ -1,5 +1,5 @@
 import tweepy
-#import asyncio
+import asyncio
 import time
 import threading
 
@@ -41,10 +41,11 @@ def setup_tweet_stream(out_stream):
 def clean_process():
     tweet = queue_stream.pop(0)
     new_data_obj = data_object.get_dataobj_converted(tweet)
-    BasicCleaner.autocleaner(new_data_obj, sentiment_range, False)
+    BasicCleaner.autocleaner(new_data_obj, sentiment_range, True)
     queue_cleaned.append(new_data_obj)
     print(len(queue_stream))
-
+    #total_tweet_counter = (1337)
+    
     if new_data_obj.place:
         print('##################################')
         print(new_data_obj.unique_id)
@@ -57,6 +58,7 @@ def clean_process():
         print('##################################')
         geo_tweet_counter = int(geo_tweet_counter) + 1
         print('total number of tweets with geo-tag: ', geo_tweet_counter)
+
 
 ######################################
 ############ Counter #################
@@ -71,7 +73,10 @@ switch_cleaner_loop = True # // AA: hack
 def cleaner_loop():
     while switch_cleaner_loop:
         if len(queue_stream) > 0:
-            clean_process()
+            try:
+                clean_process()
+            except:
+                print("cleaner_loop issue in main.py")
 
 
 

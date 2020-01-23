@@ -10,7 +10,7 @@ from packages.cleaning import data_object
 
 
 #file_path = "../pickle_saved_data"
-file_path = "../datasplit/out/191120-21_34_19--191120-21_35_18" 
+file_path = "./datasplit/out/191120-21_34_19--191120-21_35_18" 
 sentiment_range = [float(-1), float(1)]
 
 def get_long_tweet_objects():
